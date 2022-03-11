@@ -1,0 +1,78 @@
+{% set version = "1.6" %}
+
+package:
+  name: coretracker
+  version: "{{ version }}"
+
+source:
+  git_url: https://github.com/UdeM-LBIT/CoreTracker.git
+  git_rev: "{{ version }}"
+
+build:
+  binary_relocation: True
+  preserve_egg_dir: True
+  detect_binary_files_with_prefix: True
+  number: 2
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - numpy >=1.8.2
+    - scipy >=0.16.1
+    - matplotlib >=1.5.1
+    - biopython <=1.77
+    - scikit-learn >=0.17
+    - weasyprint
+    - html5lib ==0.999
+    - pyyaml
+    - pandas
+    - pyqt >=4.11.4
+    - ete3
+    - libgfortran
+    - muscle
+    - hmmer
+    - mafft
+    - psutil
+
+  run:
+    - python
+    - numpy >=1.8.2
+    - scipy >=0.16.1
+    - matplotlib >=1.5.1
+    - biopython <=1.77
+    - scikit-learn >=0.17
+    - weasyprint
+    - html5lib >=0.999
+    - pyyaml
+    - pandas
+    - pyqt >=4.11.4
+    - ete3   
+    - psutil
+    - muscle
+    - hmmer
+    - mafft
+    - joblib
+
+
+test:
+  # Python imports
+  imports:
+    - coretracker.FisherExact
+    - coretracker.classifier
+    - coretracker.coreutils
+    - coretracker.settings
+ 
+  commands:
+    - coretracker -h
+    - coreconvert -h
+    - corefus -h
+    - codonclust -h
+    - coretrans -h
+
+
+about:
+  home: https://github.com/UdeM-LBIT/CoreTracker
+  license: GNU General Public License (GPL)
+  summary: 'CoreTracker, A codon reassignment tracker'
+  license_family: LGPL

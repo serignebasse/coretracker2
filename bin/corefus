@@ -1,0 +1,51 @@
+#!/usr/bin/env python
+
+# CoreTracker Copyright (C) 2016  Emmanuel Noutahi
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import absolute_import
+from ete3 import Tree
+from coretracker.coreutils import CoreFile
+import collections
+import argparse
+
+# argument parser
+parser = argparse.ArgumentParser(
+    description='Fusion, merge 2 dataset for CoreTracker')
+
+parser.add_argument('--out', dest="output",
+                    default="merged", help="Merged output file")
+parser.add_argument('--trees', nargs=2, dest='trees', help="list of trees")
+parser.add_argument('--nucs', required=True, nargs=2,
+                    dest='nucs', help="list of nuc files")
+
+args = parser.parse_args()
+nuc = CoreFile(args.nucs[0], alphabet="nuc").get_sequences()
+nuc1 = CoreFile(args.nucs[1], alphabet="nuc").get_sequences()
+
+for (k, v) in nuc1.items():
+    cnuc = nuc.get(k, None)
+    if cnuc:
+        nuc[k].extend(v)
+    else:
+        nuc[k] = v
+
+CoreFile.write_corefile(nuc, args.output + ".core")
+
+if args.trees:
+    t = Tree()
+    t1 = Tree(args.trees[0])
+    t2 = Tree(args.trees[1])
+    t.add_child(t1)
+    t.add_child(t2)
+    t.write(features=[], outfile=args.output + ".nw")
